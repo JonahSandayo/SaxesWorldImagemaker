@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><title>描画テスト</title></head>
+<body onload="loadImage('preview');">使い方！<br>テキストボックスに文字を入力して画像生成ボタンを押すだけ。直接入力して描画するには不向きなので別のメモなどに書いてからコピペしてください。適度に改行してください。リセットボタンで画像をリセットできます。</body>
+<style>
+    input.example1 {
+        width: 250px;
+        height: 1em;
+}
+</style>
+<p><canvas id="preview"></canvas></p>
+<p>
+
+
+<input type="text" value="タイトルを入力"  id="Titletext">
+<br>
+<textarea cols="40" rows="10" onkeyup="ShowLength(value) ;" id="canvas_text"></textarea>
+<button onclick="drawText('preview', 'canvas_text');drawTitle('preview', 'Titletext');" >画像生成</button>
+<button onclick ="loadImage('preview');">リセット</button>
+
+</p>
+<p id="inputlength">0文字</p>
+
+<script>
+//キャンバスに画像を描画する
+function loadImage(id)
+{
+	//画像を読み込んでImageオブジェクトを作成する
+	var image = new Image();
+	image.src = 'https://media.discordapp.net/attachments/984116118077706290/984439410869276692/6294a57f9a63b617.png?width=716&height=1002';
+	image.onload = (function () {
+		//画像ロードが完了してからキャンバスの準備をする
+		var canvas = document.getElementById(id);
+		var ctx = canvas.getContext('2d');
+		//キャンバスのサイズを画像サイズに合わせる
+		canvas.width = image.width;
+		canvas.height = image.height;
+		//キャンバスに画像を描画（開始位置0,0）
+		ctx.drawImage(image, 0, 0);
+	});
+}
+//キャンバスに文字を描く
+function drawText(canvas_id, text_id)
+{
+	var canvas = document.getElementById(canvas_id);
+	var ctx = canvas.getContext('2d');
+	var text = document.getElementById(text_id).value;
+	var lineHeight = 1.1618 ;	
+	var x = 70;
+	var y = 110;
+
+	ctx.beginPath () ;
+
+	//文字のスタイルを指定
+	ctx.font = '25px serif';
+	ctx.fillStyle = '#FFFFFF';
+	//文字の配置を指定（左上基準にしたければtop/leftだが、文字の中心座標を指定するのでcenter
+	ctx.textBaseline = 'top';
+	ctx.textAlign = 'left';
+
+	for( var lines=(String(text)).split( "\n" ), i=0, l=lines.length; l>i; i++ ) {
+	var line = lines[i] ;
+	var addY = 25 ;
+
+	// 2行目以降の水平位置は行数とlineHeightを考慮する
+	if ( i ) addY += 25 * lineHeight * i ;
+
+	ctx.fillText( line, x + 0, y + addY ) ;
+
+	}
+}
+
+
+function drawTitle(canvas_id, text_id)
+{
+	var canvas = document.getElementById(canvas_id);
+	var ctx = canvas.getContext('2d');
+	var text = document.getElementById(text_id);
+	//文字のスタイルを指定
+	ctx.font = '45px serif';
+	ctx.fillStyle = '#FFFFFF';
+	//文字の配置を指定（左上基準にしたければtop/leftだが、文字の中心座標を指定するのでcenter
+	ctx.textBaseline = 'top';
+	ctx.textAlign = 'left';
+	//座標を指定して文字を描く（座標は画像の中心に）
+	var x = 150;
+	var y = 92;
+	ctx.fillText(text.value, x, y);
+}
+
+function ShowLength( str ) {
+   document.getElementById("inputlength").innerHTML = str.length + "文字";
+}
+
+</script>
+</body>
+</html>
